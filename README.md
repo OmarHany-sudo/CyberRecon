@@ -1,5 +1,4 @@
 # CyberRecon
-# CyberRecon
 CyberRecon: Vulnerability Scanner
 
 CyberRecon is a simple tool for network vulnerability scanning and discovery using the nmap library. It helps in scanning open ports and network devices, and displays the server type alongside each IP address.
