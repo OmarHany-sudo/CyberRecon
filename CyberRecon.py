@@ -11,28 +11,34 @@ def scan_target(target):
 
 # دالة توليد تقرير
 def generate_report(scan_data, output_file):
-    with open(output_file, 'w') as f:
-        for host in scan_data.all_hosts():
-            f.write(f"Host: {host} ({scan_data[host].hostname()})\n")
-            f.write(f"State: {scan_data[host].state()}\n")
-            for proto in scan_data[host].all_protocols():
-                f.write(f"Protocol: {proto}\n")
-                ports = scan_data[host][proto].keys()
-                for port in ports:
-                    f.write(f"Port: {port}\tState: {scan_data[host][proto][port]['state']}\n")
-            f.write("\n")
-    messagebox.showinfo("Success", f"Report saved to {output_file}")
+    try:
+        with open(output_file, 'w') as f:
+            for host in scan_data.all_hosts():
+                f.write(f"Host: {host} ({scan_data[host].hostname()})\n")
+                f.write(f"State: {scan_data[host].state()}\n")
+                for proto in scan_data[host].all_protocols():
+                    f.write(f"Protocol: {proto}\n")
+                    ports = scan_data[host][proto].keys()
+                    for port in ports:
+                        f.write(f"Port: {port}\tState: {scan_data[host][proto][port]['state']}\n")
+                f.write("\n")
+        messagebox.showinfo("Success", f"Report saved to {output_file}")
+    except Exception as e:
+        messagebox.showerror("Error", f"An error occurred while saving the report: {e}")
 
 # دالة بدء المسح
 def start_scan():
-    target = target_entry.get()
+    target = target_entry.get().strip()
     if not target:
         messagebox.showwarning("Warning", "Please enter a target")
         return
-    scan_data = scan_target(target)
-    output_file = filedialog.asksaveasfilename(defaultextension=".txt", filetypes=[("Text files", "*.txt")])
-    if output_file:
-        generate_report(scan_data, output_file)
+    try:
+        scan_data = scan_target(target)
+        output_file = filedialog.asksaveasfilename(defaultextension=".txt", filetypes=[("Text files", "*.txt")])
+        if output_file:
+            generate_report(scan_data, output_file)
+    except Exception as e:
+        messagebox.showerror("Error", f"An error occurred during scanning: {e}")
 
 # إعداد واجهة Tkinter
 root = tk.Tk()
